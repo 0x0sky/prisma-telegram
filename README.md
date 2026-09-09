@@ -6,18 +6,23 @@ Personal Telegram client for multi-channel publishing through Prism.
 
 ## Current client
 
-The initial slice consumes an immutable `aiaiaiai-prism-bot` commit and exposes its runnable Telegram webhook application.
+The client pins an immutable `aiaiaiai-prism-bot` commit and extends its public client-composition contract with the first Prisma-specific conversational flow.
 
-Available interaction infrastructure currently includes:
+Available interactions:
 
 - `/start` — onboard or resolve the Telegram user through Prism Hub;
-- `/help` — show supported commands;
+- `/post` — start a two-message create-post flow;
+- `зробити допис` — natural-text alias for `/post`;
+- `/cancel` — cancel a pending conversational action;
+- `/help` — show the Prisma command surface;
 - `/status` — read the caller-owned bot lifecycle state;
 - `/stop` — persistently pause the caller-owned logical bot instance;
 - `/resume` — resume a paused instance;
 - `/channels` — list Hub-authorised publishing channels;
 - `/publish text` — publish text through configured default channels;
 - `/publish [channel-a,channel-b] text` — publish to explicit Hub channel IDs.
+
+`/post` stores `awaiting_post_content`, prompts for text, and publishes the next ordinary message through the same shared publication handler used by `/publish`. Successful publication clears the state. A publishing failure leaves the state pending so the user can retry or use `/cancel`.
 
 Provider credentials never enter this client. Telegram identity evidence, human authorisation, social-account access, channels, and publication permissions are resolved server-side by Prism Hub.
 
@@ -36,12 +41,16 @@ Configure Telegram to send updates to `/telegram/webhook` using the same webhook
 
 ## Configuration
 
-`.env.example` defines the complete current runtime contract. Client defaults are explicit:
+`.env.example` defines the runtime contract. Client defaults are explicit:
 
 - instance: `prisma-telegram`;
 - locale: `uk-UA`;
 - voice profile: `0x0sky.uk_SP`;
-- dispatch policy: `require_all_valid`.
+- dispatch policy: `require_all_valid`;
+- interaction state TTL: `900` seconds;
+- local interaction state directory: `var/interaction-state`.
+
+`PRISMA_TELEGRAM_INTERACTION_STATE_DIR` must point to persistent storage in a real deployment. The default relative directory is intended for local/single-node use. Do not place credentials in that directory; it contains only short-lived product interaction state.
 
 Channel IDs remain empty until Hub exposes the concrete accounts/channels this client may publish to.
 
@@ -49,16 +58,14 @@ Channel IDs remain empty until Hub exposes the concrete accounts/channels this c
 
 ```text
 Telegram
-  -> prisma-telegram
+  -> prisma-telegram product composition
   -> aiaiaiai-prism-bot
   -> prism-hub API v1
   -> prism-execution.v1
   -> prism
 ```
 
-See [`docs/architecture.md`](docs/architecture.md) for ownership and dependency rules.
-
-The next product-facing increment is not another backend. `prism-bot` needs an explicit reusable client-composition boundary so `prisma-telegram` can define its own conversational UX — for example, “create post” followed by the next message as content — while continuing to reuse the same identity, lifecycle, channel, and publication infrastructure.
+See [`docs/architecture.md`](docs/architecture.md) for ownership, state-persistence, and dependency rules.
 
 ## Verification
 
