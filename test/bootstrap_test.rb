@@ -3,21 +3,29 @@
 require "json"
 require "minitest/autorun"
 require "rack/mock"
-require "prism_bot"
+require "tmpdir"
+require_relative "../lib/prisma_telegram"
 
 class BootstrapTest < Minitest::Test
-  def test_builds_runnable_client_from_prism_bot_infrastructure
-    app = PrismBot::Bootstrap.build(
-      env: environment,
-      logger: Logger.new(IO::NULL)
-    )
+  def test_builds_runnable_concrete_client
+    Dir.mktmpdir do |directory|
+      state_store = PrismaTelegram::FileInteractionStateStore.new(
+        directory: directory,
+        ttl_seconds: 900
+      )
+      app = PrismBot::Bootstrap.build(
+        env: environment,
+        client: PrismaTelegram::Client.new(state_store: state_store),
+        logger: Logger.new(IO::NULL)
+      )
 
-    response = Rack::MockRequest.new(app).get("/healthz")
-    payload = JSON.parse(response.body)
+      response = Rack::MockRequest.new(app).get("/healthz")
+      payload = JSON.parse(response.body)
 
-    assert_equal 200, response.status
-    assert_equal "ok", payload.fetch("status")
-    assert_equal "prism-bot", payload.fetch("service")
+      assert_equal 200, response.status
+      assert_equal "ok", payload.fetch("status")
+      assert_equal "prism-bot", payload.fetch("service")
+    end
   end
 
   def test_client_defaults_are_explicit
@@ -27,6 +35,23 @@ class BootstrapTest < Minitest::Test
     assert_equal "uk-UA", configuration.default_locale
     assert_equal "0x0sky.uk_SP", configuration.default_voice_profile
     assert_equal "require_all_valid", configuration.dispatch_policy
+  end
+
+  def test_interaction_state_defaults_are_explicit
+    configuration = PrismaTelegram::Configuration.new({})
+
+    assert_equal File.expand_path("var/interaction-state"), configuration.state_directory
+    assert_equal 900, configuration.state_ttl_seconds
+  end
+
+  def test_rejects_invalid_interaction_state_ttl
+    error = assert_raises(PrismBot::ConfigurationError) do
+      PrismaTelegram::Configuration.new(
+        "PRISMA_TELEGRAM_INTERACTION_STATE_TTL_SECONDS" => "0"
+      )
+    end
+
+    assert_equal "prisma_telegram.configuration.integer.invalid", error.code
   end
 
   private
