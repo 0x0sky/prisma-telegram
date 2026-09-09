@@ -8,7 +8,7 @@ module PrismaTelegram
     attr_reader :state_directory, :state_ttl_seconds
 
     def initialize(environment)
-      @state_directory = state_directory(environment)
+      @state_directory = resolve_state_directory(environment)
       @state_ttl_seconds = positive_integer(
         environment.fetch(
           "PRISMA_TELEGRAM_INTERACTION_STATE_TTL_SECONDS",
@@ -21,7 +21,7 @@ module PrismaTelegram
 
     private
 
-    def state_directory(environment)
+    def resolve_state_directory(environment)
       value = String(
         environment.fetch(
           "PRISMA_TELEGRAM_INTERACTION_STATE_DIR",
