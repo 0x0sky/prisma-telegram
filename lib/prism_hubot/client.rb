@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   class Client
     def initialize(state_store:, presenter: Presenter.new)
       @state_store = state_store

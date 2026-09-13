@@ -1,9 +1,9 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   module Copy
     HELP = <<~TEXT.freeze
-      Prisma:
+      Prism Hubot:
       /start — підключити себе до Prism
       /post — створити допис у два кроки
       /cancel — скасувати поточну дію

@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   class Presenter < PrismBot::Channels::Telegram::ResultPresenter
     def help
       Copy::HELP
@@ -11,7 +11,7 @@ module PrismaTelegram
         raise ArgumentError, "actor must be a HumanActor"
       end
 
-      "Prisma готова. Публічний ID: #{actor.canonical_id}.\n\n#{help}"
+      "Prism Hubot готова. Публічний ID: #{actor.canonical_id}.\n\n#{help}"
     end
 
     def unknown

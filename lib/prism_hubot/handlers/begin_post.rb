@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   module Handlers
     class BeginPost
       STATE = PrismBot::Domain::InteractionState.new(

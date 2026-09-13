@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   module Handlers
     class AwaitPostContent
       def initialize(publish_handler:, message_sender:)

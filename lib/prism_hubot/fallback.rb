@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   class Fallback
     TRIGGERS = ["зробити допис", "create post"].freeze
 

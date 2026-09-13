@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   class FileInteractionStateStore
     include PrismBot::Ports::InteractionStateStore
 
@@ -23,7 +23,7 @@ module PrismaTelegram
       source = File.binread(path, MAX_STATE_BYTES + 1)
       if source.bytesize > MAX_STATE_BYTES
         raise StateStoreError.new(
-          "prisma_telegram.state.too_large",
+          "prism_hubot.state.too_large",
           "interaction state exceeds the maximum size"
         )
       end
@@ -44,7 +44,7 @@ module PrismaTelegram
       nil
     rescue JSON::ParserError, KeyError, TypeError => error
       raise StateStoreError.new(
-        "prisma_telegram.state.invalid",
+        "prism_hubot.state.invalid",
         "interaction state cannot be decoded: #{error.class}"
       )
     end
@@ -85,7 +85,7 @@ module PrismaTelegram
           payload["expires_at"].is_a?(Integer) &&
           payload["state"].is_a?(Hash)
         raise StateStoreError.new(
-          "prisma_telegram.state.invalid",
+          "prism_hubot.state.invalid",
           "interaction state has an unsupported shape"
         )
       end

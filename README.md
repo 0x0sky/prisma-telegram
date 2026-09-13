@@ -1,12 +1,12 @@
-# prisma-telegram
+# prism-hubot
 
 Personal Telegram client for multi-channel publishing through Prism.
 
-`prisma-telegram` is the first concrete client product built on [`aiaiaiai-org/prism-bot`](https://github.com/aiaiaiai-org/prism-bot). It composes shared bot infrastructure instead of reimplementing Telegram transport, Prism Hub authorisation, lifecycle, or publishing behaviour.
+`prism-hubot` is the first concrete client product built on [`aiaiaiai-org/prism-bot`](https://github.com/aiaiaiai-org/prism-bot). It composes shared bot infrastructure instead of reimplementing Telegram transport, Prism Hub authorisation, lifecycle, or publishing behaviour.
 
 ## Current client
 
-The client pins an immutable `aiaiaiai-prism-bot` commit and extends its public client-composition contract with the first Prisma-specific conversational flow.
+The client pins an immutable `aiaiaiai-prism-bot` commit and extends its public client-composition contract with the first Prism Hubot-specific conversational flow.
 
 Available interactions:
 
@@ -14,7 +14,7 @@ Available interactions:
 - `/post` — start a two-message create-post flow;
 - `зробити допис` — natural-text alias for `/post`;
 - `/cancel` — cancel a pending conversational action;
-- `/help` — show the Prisma command surface;
+- `/help` — show the Prism Hubot command surface;
 - `/status` — read the caller-owned bot lifecycle state;
 - `/stop` — persistently pause the caller-owned logical bot instance;
 - `/resume` — resume a paused instance;
@@ -43,22 +43,28 @@ Configure Telegram to send updates to `/telegram/webhook` using the same webhook
 
 `.env.example` defines the runtime contract. Client defaults are explicit:
 
-- instance: `prisma-telegram`;
+- instance: `prism-hubot`;
 - locale: `uk-UA`;
 - voice profile: `0x0sky.uk_SP`;
 - dispatch policy: `require_all_valid`;
 - interaction state TTL: `900` seconds;
 - local interaction state directory: `var/interaction-state`.
 
-`PRISMA_TELEGRAM_INTERACTION_STATE_DIR` must point to persistent storage in a real deployment. The default relative directory is intended for local/single-node use. Do not place credentials in that directory; it contains only short-lived product interaction state.
+`PRISM_HUBOT_INTERACTION_STATE_DIR` must point to persistent storage in a real deployment. The default relative directory is intended for local/single-node use. Do not place credentials in that directory; it contains only short-lived product interaction state.
 
 Channel IDs remain empty until Hub exposes the concrete accounts/channels this client may publish to.
+
+### Rename migration
+
+The Ruby entry point is `lib/prism_hubot`, with the `PrismHubot` namespace. Client-owned environment variables use `PRISM_HUBOT_INTERACTION_STATE_DIR` and `PRISM_HUBOT_INTERACTION_STATE_TTL_SECONDS`; previous names have no compatibility aliases. Shared `PRISM_BOT_*` and `PRISM_HUB_*` variables keep their existing contract.
+
+The example instance ID is `prism-hubot`. For an existing installation, retain its current `PRISM_BOT_INSTANCE_ID`, state directory, and TTL when adopting the new variable names: the instance ID participates in interaction-state and publication idempotency keys. Changing it intentionally starts a separate logical instance. This rename does not migrate stored state or change routing, publication, or lifecycle behaviour.
 
 ## Architecture
 
 ```text
 Telegram
-  -> prisma-telegram product composition
+  -> prism-hubot product composition
   -> aiaiaiai-prism-bot
   -> prism-hub API v1
   -> prism-execution.v1

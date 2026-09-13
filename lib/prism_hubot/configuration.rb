@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   class Configuration
     DEFAULT_STATE_DIRECTORY = "var/interaction-state".freeze
     DEFAULT_STATE_TTL_SECONDS = 900
@@ -11,10 +11,10 @@ module PrismaTelegram
       @state_directory = resolve_state_directory(environment)
       @state_ttl_seconds = positive_integer(
         environment.fetch(
-          "PRISMA_TELEGRAM_INTERACTION_STATE_TTL_SECONDS",
+          "PRISM_HUBOT_INTERACTION_STATE_TTL_SECONDS",
           DEFAULT_STATE_TTL_SECONDS.to_s
         ),
-        "PRISMA_TELEGRAM_INTERACTION_STATE_TTL_SECONDS"
+        "PRISM_HUBOT_INTERACTION_STATE_TTL_SECONDS"
       )
       freeze
     end
@@ -24,14 +24,14 @@ module PrismaTelegram
     def resolve_state_directory(environment)
       value = String(
         environment.fetch(
-          "PRISMA_TELEGRAM_INTERACTION_STATE_DIR",
+          "PRISM_HUBOT_INTERACTION_STATE_DIR",
           DEFAULT_STATE_DIRECTORY
         )
       ).strip
       if value.empty?
         raise PrismBot::ConfigurationError.new(
-          "prisma_telegram.state_directory.invalid",
-          "PRISMA_TELEGRAM_INTERACTION_STATE_DIR must not be empty"
+          "prism_hubot.state_directory.invalid",
+          "PRISM_HUBOT_INTERACTION_STATE_DIR must not be empty"
         )
       end
 
@@ -45,7 +45,7 @@ module PrismaTelegram
       raise ArgumentError
     rescue ArgumentError, TypeError
       raise PrismBot::ConfigurationError.new(
-        "prisma_telegram.configuration.integer.invalid",
+        "prism_hubot.configuration.integer.invalid",
         "#{name} must be a positive integer"
       )
     end
