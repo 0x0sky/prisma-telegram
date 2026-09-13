@@ -13,7 +13,7 @@ module PrismHubot
 
       def call(update:, arguments:)
         @message_sender.send_message(
-          chat_id: update.chat_id,
+          **update.reply_target,
           text: Copy::POST_PROMPT
         )
         PrismBot::Domain::InteractionTransition.set(STATE)
