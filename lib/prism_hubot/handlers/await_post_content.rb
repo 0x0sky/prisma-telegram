@@ -12,7 +12,7 @@ module PrismHubot
         text = String(update.text).strip
         if text.empty?
           @message_sender.send_message(
-            chat_id: update.chat_id,
+            **update.reply_target,
             text: Copy::EMPTY_POST
           )
           return PrismBot::Domain::InteractionTransition.keep
