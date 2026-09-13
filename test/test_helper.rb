@@ -32,8 +32,10 @@ module PrismHubotTestSupport
       @messages = []
     end
 
-    def send_message(chat_id:, text:)
-      @messages << {chat_id: chat_id, text: text}
+    def send_message(chat_id:, text:, message_thread_id: nil)
+      message = {chat_id: chat_id, text: text}
+      message[:message_thread_id] = message_thread_id if message_thread_id
+      @messages << message
     end
   end
 
@@ -93,12 +95,26 @@ module PrismHubotTestSupport
     )
   end
 
-  def authorized_update(text:, update_id:)
+  def authorized_update(
+    text:,
+    update_id:,
+    chat_id: 100,
+    chat_type: "private",
+    message_thread_id: nil,
+    title: nil
+  )
+    surface = PrismBot::Channels::Telegram::SurfaceContext.new(
+      chat_id: chat_id,
+      chat_type: chat_type,
+      message_thread_id: message_thread_id,
+      title: title
+    )
     update = PrismBot::Channels::Telegram::Update.new(
       update_id: update_id,
-      chat_id: 100,
+      chat_id: chat_id,
       user_id: 7,
-      text: text
+      text: text,
+      surface_context: surface
     )
     actor = PrismBot::Domain::HumanActor.new(
       canonical_id: "0x0sky",
@@ -110,10 +126,10 @@ module PrismHubotTestSupport
     )
   end
 
-  def interaction_key
+  def interaction_key(chat_id: 100, message_thread_id: nil)
     PrismBot::Domain::InteractionKey.new(
       instance_id: "prism-hubot",
-      surface: "telegram",
+      surface: "telegram:#{chat_id}:#{message_thread_id || 'root'}",
       actor_ref: "person:0x0sky"
     )
   end
