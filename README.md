@@ -10,7 +10,8 @@ The client pins an immutable `aiaiaiai-prism-bot` commit and extends its public 
 
 Available interactions:
 
-- `/start` — onboard or resolve the Telegram user through Prism Hub;
+- `/start` — onboard or resolve the Telegram user through Prism Hub and show the current Telegram Context Card;
+- `/context` — show the current chat/topic context without claiming an unverified Hub binding;
 - `/post` — start a two-message create-post flow;
 - `зробити допис` — natural-text alias for `/post`;
 - `/cancel` — cancel a pending conversational action;
@@ -23,6 +24,8 @@ Available interactions:
 - `/publish [channel-a,channel-b] text` — publish to explicit Hub channel IDs.
 
 `/post` stores `awaiting_post_content`, prompts for text, and publishes the next ordinary message through the same shared publication handler used by `/publish`. Successful publication clears the state. A publishing failure leaves the state pending so the user can retry or use `/cancel`.
+
+Telegram interaction state is scoped by client instance, chat ID, topic ID (or root), and the Hub-resolved canonical actor. A pending flow in one group topic therefore cannot consume an ordinary message from another topic or chat. Product-specific replies preserve the originating `message_thread_id` through the shared `SurfaceContext.reply_target` contract.
 
 Provider credentials never enter this client. Telegram identity evidence, human authorisation, social-account access, channels, and publication permissions are resolved server-side by Prism Hub.
 
@@ -59,6 +62,12 @@ Channel IDs remain empty until Hub exposes the concrete accounts/channels this c
 The Ruby entry point is `lib/prism_hubot`, with the `PrismHubot` namespace. Client-owned environment variables use `PRISM_HUBOT_INTERACTION_STATE_DIR` and `PRISM_HUBOT_INTERACTION_STATE_TTL_SECONDS`; previous names have no compatibility aliases. Shared `PRISM_BOT_*` and `PRISM_HUB_*` variables keep their existing contract.
 
 The example instance ID is `prism-hubot`. For an existing installation, retain its current `PRISM_BOT_INSTANCE_ID`, state directory, and TTL when adopting the new variable names: the instance ID participates in interaction-state and publication idempotency keys. Changing it intentionally starts a separate logical instance. This rename does not migrate stored state or change routing, publication, or lifecycle behaviour.
+
+### Surface-context dependency migration
+
+The current Prism Bot pin replaces the old flat `telegram` interaction surface with `telegram:<chat_id>:<topic_id|root>`. Existing pending interactions under the previous key are intentionally not resumed because doing so would reintroduce cross-chat leakage.
+
+`FileInteractionStateStore` hashes the whole interaction key, so old files cannot be identified by filename alone. If an existing installation needs to clean them up, stop writers and remove expired interaction-state files only after at least one configured TTL has elapsed. This repository does not perform that operational cleanup automatically.
 
 ## Architecture
 

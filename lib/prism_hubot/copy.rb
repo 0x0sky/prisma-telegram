@@ -5,6 +5,7 @@ module PrismHubot
     HELP = <<~TEXT.freeze
       Prism Hubot:
       /start — підключити себе до Prism
+      /context — показати поточний Telegram-контекст
       /post — створити допис у два кроки
       /cancel — скасувати поточну дію
       /channels — доступні канали

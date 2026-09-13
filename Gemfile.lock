@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/aiaiaiai-org/prism-bot.git
-  revision: b535419f857b73ed945b190041c41d9114094669
-  ref: b535419f857b73ed945b190041c41d9114094669
+  revision: 0748a4ec11332ac45b3fc776790b6694ddf5313f
+  ref: 0748a4ec11332ac45b3fc776790b6694ddf5313f
   specs:
     aiaiaiai-prism-bot (0.1.0.pre.alpha.1)
       puma (>= 6.6)
