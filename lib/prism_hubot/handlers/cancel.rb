@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 
-module PrismaTelegram
+module PrismHubot
   module Handlers
     class Cancel
       def initialize(message_sender:)

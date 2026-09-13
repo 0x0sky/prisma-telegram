@@ -2,9 +2,9 @@
 
 require "minitest/autorun"
 require "tmpdir"
-require_relative "../lib/prisma_telegram"
+require_relative "../lib/prism_hubot"
 
-module PrismaTelegramTestSupport
+module PrismHubotTestSupport
   class MemoryStateStore
     attr_reader :values
 
@@ -81,7 +81,7 @@ module PrismaTelegramTestSupport
 
   def services(message_sender:, publish_publication:)
     PrismBot::Client::Services.new(
-      instance_id: "prisma-telegram",
+      instance_id: "prism-hubot",
       default_channel_ids: ["personal-threads"],
       default_locale: "uk-UA",
       default_voice_profile: "0x0sky.uk_SP",
@@ -112,7 +112,7 @@ module PrismaTelegramTestSupport
 
   def interaction_key
     PrismBot::Domain::InteractionKey.new(
-      instance_id: "prisma-telegram",
+      instance_id: "prism-hubot",
       surface: "telegram",
       actor_ref: "person:0x0sky"
     )
@@ -127,7 +127,7 @@ module PrismaTelegramTestSupport
       command_router: command_router,
       state_handlers: composition.state_handlers,
       state_store: composition.state_store,
-      instance_id: "prisma-telegram"
+      instance_id: "prism-hubot"
     )
   end
 end

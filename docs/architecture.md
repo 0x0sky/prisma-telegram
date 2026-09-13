@@ -1,12 +1,12 @@
 # Architecture
 
-`prisma-telegram` is a concrete Telegram client product for Prism. It is not a second publishing backend.
+`prism-hubot` is a concrete Telegram client product for Prism. It is not a second publishing backend.
 
 ```text
 Telegram
   |
   v
-prisma-telegram
+prism-hubot
   |  product copy + interaction flows + client state adapter
   v
 PrismBot::Client::Composition
@@ -23,7 +23,7 @@ prism
 
 ## Ownership
 
-`prisma-telegram` owns only product composition and Telegram-facing product choices specific to this client: enabled flows, copy, defaults, deployment configuration, and short-lived conversational state persistence.
+`prism-hubot` owns only product composition and Telegram-facing product choices specific to this client: enabled flows, copy, defaults, deployment configuration, and short-lived conversational state persistence.
 
 `prism-bot` owns reusable messaging-client infrastructure: Telegram webhook verification and parsing, Hub identity resolution, per-user lifecycle gating, command/interaction routing, message delivery, generated Hub API integration, and reusable publishing use cases.
 
@@ -67,7 +67,7 @@ This adapter assumes one active process over one state directory. A future horiz
 
 ## Dependency rules
 
-- `prisma-telegram` talks to providers only through `prism-bot` and Prism Hub contracts.
+- `prism-hubot` talks to providers only through `prism-bot` and Prism Hub contracts.
 - Raw provider credentials never belong in this repository or Telegram messages.
 - Client-specific UX must not be implemented by copying `prism-bot` internals.
 - Shared behaviour needed by multiple bot clients moves down into `prism-bot` behind its public composition boundary.

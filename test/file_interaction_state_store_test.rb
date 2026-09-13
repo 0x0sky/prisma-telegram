@@ -3,12 +3,12 @@
 require_relative "test_helper"
 
 class FileInteractionStateStoreTest < Minitest::Test
-  include PrismaTelegramTestSupport
+  include PrismHubotTestSupport
 
   def test_state_survives_store_recreation
     Dir.mktmpdir do |directory|
       clock = 1_000
-      first = PrismaTelegram::FileInteractionStateStore.new(
+      first = PrismHubot::FileInteractionStateStore.new(
         directory: directory,
         ttl_seconds: 900,
         clock: -> { clock }
@@ -20,7 +20,7 @@ class FileInteractionStateStoreTest < Minitest::Test
 
       first.store(key: interaction_key, state: state)
 
-      second = PrismaTelegram::FileInteractionStateStore.new(
+      second = PrismHubot::FileInteractionStateStore.new(
         directory: directory,
         ttl_seconds: 900,
         clock: -> { clock }
@@ -35,7 +35,7 @@ class FileInteractionStateStoreTest < Minitest::Test
   def test_expired_state_is_removed
     Dir.mktmpdir do |directory|
       clock = 1_000
-      store = PrismaTelegram::FileInteractionStateStore.new(
+      store = PrismHubot::FileInteractionStateStore.new(
         directory: directory,
         ttl_seconds: 10,
         clock: -> { clock }
@@ -52,7 +52,7 @@ class FileInteractionStateStoreTest < Minitest::Test
 
   def test_file_name_does_not_expose_actor_reference
     Dir.mktmpdir do |directory|
-      store = PrismaTelegram::FileInteractionStateStore.new(
+      store = PrismHubot::FileInteractionStateStore.new(
         directory: directory,
         ttl_seconds: 10
       )
