@@ -9,7 +9,7 @@ module PrismHubot
 
       def call(update:, arguments:)
         @message_sender.send_message(
-          chat_id: update.chat_id,
+          **update.reply_target,
           text: Copy::CANCELLED
         )
         PrismBot::Domain::InteractionTransition.clear
